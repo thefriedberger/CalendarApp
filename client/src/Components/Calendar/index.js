@@ -21,6 +21,9 @@ function getFullMonth(i) {
     ];
     return months[i];
 }
+// document.addEventListener('keypress', (e) => {
+//  console.log(e)
+// });
 class Calendar extends React.Component {
     constructor(props) {
         super(props);
@@ -97,6 +100,10 @@ class Calendar extends React.Component {
     }
     componentDidMount() {
         this.setState({days: this.setCalendar() });
+        document.onkeydown = (e) => {
+            if (e.key==="ArrowLeft") this.changeMonth(0);
+            if (e.key==="ArrowRight") this.changeMonth(1);
+        }
     }
     render() {
         let monthToDisplay = this.state.currentMonth;
@@ -110,10 +117,22 @@ class Calendar extends React.Component {
                     <p>{monthToDisplay}, {yearToDisplay}</p>
                     <button className={classnames(styles.next)} onClick={() => this.changeMonth(1)}></button>
                 </div>
-                <div id="calendar" className={classnames(styles.calendarContainer, (daysToPrint===42) ? styles.extraRow : "")}>
-                    {
-                        daysArray.map((day) => this.renderDay(day))
-                    }
+                <div className={styles.calendarContainer}>
+                    <div className={styles.dayIndicator}>
+                        <div>S</div>
+                        <div>M</div>
+                        <div>T</div>
+                        <div>W</div>
+                        <div>T</div>
+                        <div>F</div>
+                        <div>S</div>
+                    </div>
+                    <div id="calendar" className={classnames(styles.calendar, (daysToPrint===42) ? styles.extraRow : "")}>
+                        {
+                            daysArray.map((day) => this.renderDay(day))
+                        }
+                    </div>
+
                 </div>
             </div>
         )

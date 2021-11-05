@@ -7,10 +7,11 @@
 
     p {
         margin: 0 25px;
+        min-width: 130px;
     }
 
     button {
-        background: rgb(180,90, 20);
+        background: rgb(210, 60, 62);
         border-radius: 5px;
         border: none;
         width: 30px;
@@ -68,20 +69,33 @@
     }
 }
 .calendarContainer {
+    display: flex;
+    flex-direction: column;
     width: 70%;
-    display: grid;
     margin: auto;
-    padding: 10px 0;
-    justify-items: center;
-    grid-template-rows: 12vh 12vh 12vh 12vh 12vh;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
     background-image: linear-gradient(-45deg, rgba(0,0,0,0.25), rgba(255,255,255,.3));
     box-shadow: 
         10px 10px 20px rgba(0,0,0,0.25),
         -12px -10px 20px rgba(255,255,255,.2);
     border-radius: 15px;
-
-    &.extraRow {
-        grid-template-rows: 12vh 12vh 12vh 12vh 12vh 12vh;
+    .calendar {
+        width: 100%;
+        display: grid;
+        margin: auto;
+        padding: 10px 0;
+        justify-items: center;
+        grid-template-rows: 12vh 12vh 12vh 12vh 12vh;
+        grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    
+        &.extraRow {
+            grid-template-rows: 12vh 12vh 12vh 12vh 12vh 12vh;
+        }
+    
+    }
+    .dayIndicator {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px calc(100% / 15.2) 0;
+        
     }
 }

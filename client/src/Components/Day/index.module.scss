@@ -10,7 +10,7 @@
     border-radius: 15px;
     transition: transform 0.25s, background-image 0.25s;
     &.currentDay {
-        background-image: linear-gradient(-45deg,  rgba(59, 39, 39, 0.25), rgba(233, 200, 200, 0.3));
+        background-image: linear-gradient(-45deg,  rgba(126, 111, 111, 0.5), rgba(240, 64, 67, 0.3));
         box-shadow: 
             10px 10px 20pxrgba(59, 39, 39, 0.25),
             -12px -10px 20px rgba(233, 200, 200, 0.3);
@@ -23,6 +23,8 @@
         -moz-animation: Animation 1s ease forwards;
         animation: Animation 1s ease forwards;
     }
+    user-select: none;
+    cursor: pointer;
 }
   
 @-webkit-keyframes Animation {
