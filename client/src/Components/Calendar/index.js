@@ -21,9 +21,6 @@ function getFullMonth(i) {
     ];
     return months[i];
 }
-// document.addEventListener('keypress', (e) => {
-//  console.log(e)
-// });
 class Calendar extends React.Component {
     constructor(props) {
         super(props);
@@ -48,6 +45,7 @@ class Calendar extends React.Component {
     }
     setCalendar() {
         let daysArray = [];
+        dayValue = 1;
         for(let i=0; i<daysToPrint; i++) {
             if(i>=firstDay && dayValue<=daysInMonth) {
                 if(currentDay===i && (currentMonth === month && currentYear === year)) {
@@ -99,7 +97,6 @@ class Calendar extends React.Component {
         this.setState({days: this.setCalendar()});
     }
     componentDidMount() {
-        this.setState({days: this.setCalendar() });
         document.onkeydown = (e) => {
             if (e.key==="ArrowLeft") this.changeMonth(0);
             if (e.key==="ArrowRight") this.changeMonth(1);
@@ -109,6 +106,7 @@ class Calendar extends React.Component {
         let monthToDisplay = this.state.currentMonth;
         let daysArray = this.state.days;
         let yearToDisplay = this.state.currentYear;
+        // console.log(this.setCalendar());
 
         return(
             <div>
@@ -129,7 +127,7 @@ class Calendar extends React.Component {
                     </div>
                     <div id="calendar" className={classnames(styles.calendar, (daysToPrint===42) ? styles.extraRow : "")}>
                         {
-                            daysArray.map((day) => this.renderDay(day))
+                            daysArray.map((day) =>  this.renderDay(day) )
                         }
                     </div>
 
