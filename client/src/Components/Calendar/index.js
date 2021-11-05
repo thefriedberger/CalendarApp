@@ -1,66 +1,123 @@
 import React from "react";
 import styles from "./index.module.scss";
 import classnames from "classnames";
-function setCal() {
-    let year = new Date().getFullYear();
-    let month = new Date().getMonth();
-    let day;
-    let date;
-    let daysInMonth = new Date(year, month, 0).getDate();
-    let firstDay = new Date(year, month, 1).getDay();
-    let calendar = document.getElementById("calendar");
-    let days = [];
-    let currentDay = new Date().getDate() + firstDay-1;
-    let dayValue = 1;
-    let daysToPrint = (firstDay>4) ? 42 : 35;
-    if(daysToPrint==42)
-    calendar.style.gridTemplateRows = "150px 150px 150px 150px 150px 150px";
+import Day from '../Day';
 
-    for(let i=0; i<daysToPrint; i++) {
-        let newDay = document.createElement("div");
-        newDay.classList.add("day");
-        days.push(newDay);
-        calendar.append(days[i]);  
-    }
-    console.log(daysInMonth)
-    for(let i=0; i<days.length; i++) {
-        if(i>=firstDay) {
-            day = new Date(year, month, i+1).getDate();
-            days[i].innerText = dayValue; 
-            dayValue++;
-        }
-        if(dayValue>=daysInMonth) {
-            return;
-        }
-        if(currentDay==i) {
-            days[i].classList.add("currentDay");
-        }
-    }
-    days.forEach((day) => {
-        day.addEventListener("click", function(e) {
-            for(let i=0; i<days.length;i++) {
-                if(days[i].classList.contains("active")){
-                    days[i].classList.remove("active");
-                }
-            }
-            if(e.target.classList.contains("active")) {
-                e.target.classList.remove('active');
-            } else {
-                e.target.classList.add("active");
-            }
-        })
-    })
+const currentYear = new Date().getFullYear();
+const currentMonth = new Date().getMonth();
+let year = new Date().getFullYear();
+let month = new Date().getMonth();
+let daysInMonth = new Date(year, month+1, 0).getDate();
+let firstDay = new Date(year, month, 1).getDay();
+let currentDay = new Date().getDate() + firstDay-1;
+let dayValue = 1;
+let daysToPrint = (firstDay+daysInMonth>35) ? 42 : 35;
+
+function getFullMonth(i) {
+    let months = [
+        "January","February","March","April",
+        "May","June","July","August",
+        "September","October","November","December"
+    ];
+    return months[i];
 }
-
 class Calendar extends React.Component {
-    componentDidMount(){
-        setCal()
+    constructor(props) {
+        super(props);
+        this.state = {
+            days: this.setCalendar(),
+            currentMonth: getFullMonth(month),
+            currentYear: new Date().getFullYear(),
+        }
+    }
+    renderDay(day) {
+        return <Day
+                    key={day.key}
+                    day={day.day}
+                    currentDay={day.currentDay}
+                    onClick={ () => this.handleClick(day)}
+                />;
+    }
+    handleClick(day) {
+        if (day.day != null) { // only fire if day has date
+            console.log(this, day);
+        }
+    }
+    setCalendar() {
+        let daysArray = [];
+        for(let i=0; i<daysToPrint; i++) {
+            if(i>=firstDay && dayValue<=daysInMonth) {
+                if(currentDay===i && (currentMonth === month && currentYear === year)) {
+                    daysArray.push({
+                        key: i,
+                        day: dayValue,
+                        currentDay: true,
+                    });
+                } else {
+                    daysArray.push({
+                        key: i,
+                        day: dayValue,
+                        currentDay: false,
+                    });
+                }
+                dayValue++;
+            } else {
+                daysArray.push({
+                    key: i,
+                    day: null,
+                    currentDay: false,
+                });                
+            }
+        }
+        return daysArray;
+    }
+    changeMonth(direction) {
+        if (direction===0) {
+            if (month-- <= 0) {
+                year--
+                month = 11;
+            } else {
+                month = month--;
+            }
+        } else {
+            if (month++ >= 11) {
+                year++;
+                month = 0;
+            } else {
+                month = month++;
+            }            
+        }
+        daysInMonth = new Date(year, month+1, 0).getDate();
+        firstDay = new Date(year, month, 1).getDay();
+        dayValue = 1;
+        daysToPrint = (firstDay+daysInMonth>35) ? 42 : 35;
+        this.setState({currentMonth: getFullMonth(month)});
+        this.setState({currentYear: year});
+        this.setState({days: this.setCalendar()});
+    }
+    componentDidMount() {
+        this.setState({days: this.setCalendar() });
     }
     render() {
+        let monthToDisplay = this.state.currentMonth;
+        let daysArray = this.state.days;
+        let yearToDisplay = this.state.currentYear;
+
         return(
-            <div id="calendar" className={classnames(styles.calendarContainer)}>
+            <div>
+                <div className={classnames(styles.calendarToggler)}>
+                    <button className={classnames(styles.prev)} onClick={() => this.changeMonth(0)}></button>
+                    <p>{monthToDisplay}, {yearToDisplay}</p>
+                    <button className={classnames(styles.next)} onClick={() => this.changeMonth(1)}></button>
+                </div>
+                <div id="calendar" className={classnames(styles.calendarContainer, (daysToPrint===42) ? styles.extraRow : "")}>
+                    {
+                        daysArray.map((day) => this.renderDay(day))
+                    }
+                </div>
             </div>
         )
+        
     }
 }
 
