@@ -4,6 +4,7 @@ import logo from './logo.svg';
 import './App.css';
 import Calendar from "./Components/Calendar";
 import styles from "./index.scss";
+import FlipCard from "./Components/FlipCard";
 
 class App extends Component {
 state = {
@@ -30,6 +31,7 @@ state = {
   render() {
     return (
       <div className="App">
+        {/* <FlipCard /> */}
         <Calendar />
       </div>
     );
