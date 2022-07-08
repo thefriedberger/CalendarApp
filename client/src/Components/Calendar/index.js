@@ -13,22 +13,31 @@ let currentDay = new Date().getDate() + firstDay-1;
 let dayValue = 1;
 let daysToPrint = (firstDay+daysInMonth>35) ? 42 : 35;
 
-function getFullMonth(i) {
-    let months = [
-        "January","February","March","April",
-        "May","June","July","August",
-        "September","October","November","December"
-    ];
-    return months[i];
-}
+ 
 class Calendar extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            year: new Date().getFullYear(),
+            month: new Date().getMonth(),
             days: this.setCalendar(),
-            currentMonth: getFullMonth(month),
+            daysInMonth: new Date(this.state.year, this.state.month+1, 0).getDate(),
+            firstDay: new Date(this.state.year, this.state.month, 1).getDay(),
+            dayValue: 1,
+            daysToPrint: (this.state.firstDay+this.state.daysInMonth>35) ? 42 : 35,
+            originalMonth: this.getFullMonth(this.state.month),
+            currentMonth: this.getFullMonth(this.state.month),
+            originalYear: new Date().getFullYear(),
             currentYear: new Date().getFullYear(),
         }
+    }
+    getFullMonth(i) {
+        let months = [
+            "January","February","March","April",
+            "May","June","July","August",
+            "September","October","November","December"
+        ];
+        return months[i];
     }
     renderDay(day) {
         return <Day
@@ -44,9 +53,10 @@ class Calendar extends React.Component {
         }
     }
     setCalendar() {
+        const { dayValue, daysInMonth, currentDay, currentYear, year,  month } = this.state;
         let daysArray = [];
-        dayValue = 1;
-        for(let i=0; i<daysToPrint; i++) {
+        this.setState({dayValue: 1});
+        for(let i=0; i<this.state.daysToPrint; i++) {
             if(i>=firstDay && dayValue<=daysInMonth) {
                 if(currentDay===i && (currentMonth === month && currentYear === year)) {
                     daysArray.push({
@@ -88,14 +98,19 @@ class Calendar extends React.Component {
                 month = month++;
             }            
         }
+        this.setMonth();
+    }
+
+    setMonth = (year: Number, month: Number) => {
         daysInMonth = new Date(year, month+1, 0).getDate();
         firstDay = new Date(year, month, 1).getDay();
         dayValue = 1;
         daysToPrint = (firstDay+daysInMonth>35) ? 42 : 35;
-        this.setState({currentMonth: getFullMonth(month)});
+        this.setState({currentMonth: this.getFullMonth(month)});
         this.setState({currentYear: year});
         this.setState({days: this.setCalendar()});
     }
+
     componentDidMount() {
         document.onkeydown = (e) => {
             if (e.key==="ArrowLeft") this.changeMonth(0);
@@ -103,17 +118,16 @@ class Calendar extends React.Component {
         }
     }
     render() {
-        let monthToDisplay = this.state.currentMonth;
-        let daysArray = this.state.days;
-        let yearToDisplay = this.state.currentYear;
-        // console.log(this.setCalendar());
+        const { changeMonth, renderDay, goToCurrentMonth, setMonth } = this;
+        const { currentMonth, days, currentYear, originalYear, originalMonth } = this.state;
 
         return(
             <div>
                 <div className={classnames(styles.calendarToggler)}>
-                    <button className={classnames(styles.prev)} onClick={() => this.changeMonth(0)}></button>
-                    <p>{monthToDisplay}, {yearToDisplay}</p>
-                    <button className={classnames(styles.next)} onClick={() => this.changeMonth(1)}></button>
+                    <button className={classnames(styles.prev)} onClick={() => changeMonth(0)}></button>
+                    <p>{currentMonth}, {currentYear}</p>
+                    <button className={classnames(styles.next)} onClick={() => changeMonth(1)}></button>
+                    <button className={classnames(currentMonth)} onClick={() => setMonth(originalYear, originalMonth)}></button>
                 </div>
                 <div className={styles.calendarContainer}>
                     <div className={styles.dayIndicator}>
@@ -127,7 +141,7 @@ class Calendar extends React.Component {
                     </div>
                     <div id="calendar" className={classnames(styles.calendar, (daysToPrint===42) ? styles.extraRow : "")}>
                         {
-                            daysArray.map((day) =>  this.renderDay(day) )
+                            days.map((day) =>  renderDay(day) )
                         }
                     </div>
 

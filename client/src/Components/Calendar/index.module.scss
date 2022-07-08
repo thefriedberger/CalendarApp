@@ -36,7 +36,6 @@
             top: 0;
             left: 0;
         }
-        &:hover {
             box-shadow: 
                 10px 10px 20px rgba(0,0,0,0.25),
                 -12px -10px 20px rgba(255,255,255,.2);
@@ -44,7 +43,6 @@
             &:before {
                 border-radius: 7px;
             }
-        }
         &:active {
             box-shadow: 
                 5px 5px 12px rgba(0,0,0,0.25),
